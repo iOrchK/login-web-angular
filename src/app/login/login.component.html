@@ -1,0 +1,35 @@
+<div class="container" style="height: 100vh">
+  <div class="card mx-auto" style="width: 480px; top: 25%">
+    <div class="card-header">Authentication</div>
+    <div class="card-body">
+      <form>
+        <div class="form-group">
+          <label for="exampleInputEmail1">Email</label>
+          <input
+            type="email"
+            class="form-control"
+            (keyup)="handleEmail()"
+            [(ngModel)]="email"
+            name="emailTxt"
+          />
+        </div>
+        <div class="form-group">
+          <label for="exampleInputPassword1">Password</label>
+          <input
+            type="password"
+            class="form-control"
+            (keyup)="handlePassword()"
+            [(ngModel)]="password"
+            name="passwordTxt"
+          />
+        </div>
+        <button class="btn btn-primary float-left" (click)="onLogIn()">
+          Log In
+        </button>
+        <button class="btn btn-link float-right" [routerLink]="['/register']">
+          Register
+        </button>
+      </form>
+    </div>
+  </div>
+</div>
