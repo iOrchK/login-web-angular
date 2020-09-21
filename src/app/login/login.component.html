@@ -2,53 +2,66 @@
   <div class="card mx-auto" style="max-width: 480px; top: 25%">
     <div class="card-header">Authentication</div>
     <div class="card-body">
-      <div class="form-group">
-        <label for="exampleInputEmail1">Email</label>
-        <input
-          type="email"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': errorEmail }"
-          (keyup)="handleEmail()"
-          [(ngModel)]="login.email"
-          name="emailTxt"
-        />
-        <div class="invalid-feedback">
-          {{ errorEmail }}
-        </div>
-      </div>
-      <div class="form-group">
-        <label for="exampleInputPassword1">Password</label>
-        <input
-          type="password"
-          class="form-control"
-          [ngClass]="{ 'is-invalid': errorPassword }"
-          (keyup)="handlePassword()"
-          [(ngModel)]="login.password"
-          name="passwordTxt"
-        />
-        <div class="invalid-feedback">
-          {{ errorPassword }}
-        </div>
-      </div>
-      <div class="form-group" *ngIf="!isLoading">
-        <button
-          class="btn btn-primary float-left"
-          (click)="onLogIn()"
-          [disabled]="validateForm()"
-        >
-          Log In
-        </button>
-        <button class="btn btn-link float-right" [routerLink]="['/register']">
-          Register
-        </button>
-      </div>
-      <div
-        class="spinner-border text-primary float-left"
-        role="status"
-        *ngIf="isLoading"
+      <form
+        id="login-form"
+        #lForm="ngForm"
+        [formGroup]="loginForm"
+        (ngSubmit)="onLogIn()"
+        novalidate
       >
-        <span class="sr-only">Loading...</span>
-      </div>
+        <div class="form-group">
+          <label for="emailTxt">Email</label>
+          <input
+            id="emailTxt"
+            type="email"
+            formControlName="email"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': errorEmail }"
+            (keyup)="handleEmail()"
+          />
+          <div class="invalid-feedback">
+            {{ errorEmail }}
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="passwordTxt">Password</label>
+          <input
+            id="passwordTxt"
+            type="password"
+            formControlName="password"
+            class="form-control"
+            [ngClass]="{ 'is-invalid': errorPassword }"
+            (keyup)="handlePassword()"
+          />
+          <div class="invalid-feedback">
+            {{ errorPassword }}
+          </div>
+        </div>
+        <div class="form-group" *ngIf="!isLoading">
+          <button
+            type="submit"
+            form="login-form"
+            class="btn btn-primary float-left"
+            [disabled]="!formIsValid()"
+          >
+            Log In
+          </button>
+          <button
+            type="button"
+            class="btn btn-link float-right"
+            [routerLink]="['/register']"
+          >
+            Register
+          </button>
+        </div>
+        <div
+          class="spinner-border text-primary float-left"
+          role="status"
+          *ngIf="isLoading"
+        >
+          <span class="sr-only">Loading...</span>
+        </div>
+      </form>
     </div>
   </div>
 </div>
