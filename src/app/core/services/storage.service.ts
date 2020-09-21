@@ -15,7 +15,7 @@ export class StorageService {
     this.localStorageService.setItem('currentUser', JSON.stringify(session));
   }
   loadSessionData(): Session {
-    var sessionStr = this.localStorageService.getItem('currentUser');
+    const sessionStr = this.localStorageService.getItem('currentUser');
     return sessionStr ? <Session>JSON.parse(sessionStr) : null;
   }
   getCurrentSession(): Session {
@@ -26,15 +26,19 @@ export class StorageService {
     this.currentSession = null;
   }
   getCurrentUser(): User {
-    var session: Session = this.getCurrentSession();
+    const session: Session = this.getCurrentSession();
     return session && session.user ? session.user : null;
   }
   isAuthenticated(): boolean {
     return this.getCurrentToken() != null ? true : false;
   }
   getCurrentToken(): string {
-    var session = this.getCurrentSession();
+    const session = this.getCurrentSession();
     return session && session.token ? session.token : null;
+  }
+  getCurrentRole(): string {
+    const session = this.getCurrentSession();
+    return session && session.user ? session.user.role : null;
   }
   logout(): void {
     this.removeCurrentSession();
