@@ -29,12 +29,16 @@ export class HomeComponent implements OnInit {
       .logOut(this.storageService.getCurrentSession())
       .subscribe(
         (response) => {
-          localStorage.clear();
-          this.router.navigate(['login']);
+          this.sessionDestroy();
         },
         (error) => {
           this.isLoading = false;
         }
       );
+  }
+
+  private sessionDestroy() {
+    localStorage.clear();
+    window.location.href = '/login';
   }
 }
