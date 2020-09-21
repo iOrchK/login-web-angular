@@ -1,17 +1,29 @@
 import { Injectable } from '@angular/core';
-import { Router, CanActivate } from '@angular/router';
+import { Router, CanActivate, ActivatedRouteSnapshot } from '@angular/router';
 import { StorageService } from '../services/storage.service';
 
 @Injectable()
 export class AuthorizatedGuard implements CanActivate {
   constructor(private router: Router, private storageService: StorageService) {}
-  canActivate() {
-    console.log(this.storageService.isAuthenticated());
+
+  canActivate(route: ActivatedRouteSnapshot): boolean {
+    // Validar sesión
     if (this.storageService.isAuthenticated()) {
-      // logged in so return true
+      // Validar permisos de ruta
+      if (
+        route.data.roles &&
+        route.data.roles.indexOf(this.storageService.getCurrentRole()) === -1
+      ) {
+        // Acceso no autorizado - redireccionar al home
+        this.router.navigate(['/home']);
+        return false;
+      }
+
+      // Acceso autorizado
       return true;
     }
-    // not logged in so redirect to login page
+
+    // Acceso no autorizado
     this.router.navigate(['/login']);
     return false;
   }
