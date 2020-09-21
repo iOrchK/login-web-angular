@@ -3,9 +3,9 @@
     <div class="card-header">Registration</div>
     <div class="card-body">
       <form
-        id="login-form"
-        #lForm="ngForm"
-        [formGroup]="loginForm"
+        id="register-form"
+        #rForm="ngForm"
+        [formGroup]="registerForm"
         (ngSubmit)="onRegister()"
         novalidate
       >
@@ -61,9 +61,8 @@
           </button>
           <button
             type="submit"
-            form="login-form"
+            form="register-form"
             class="btn btn-primary float-right"
-            (click)="onRegister()"
             [disabled]="!formIsValid()"
           >
             Create account
