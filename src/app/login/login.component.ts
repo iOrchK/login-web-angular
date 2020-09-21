@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { LoginObject } from './shared/login-object.model';
 import { AuthenticationService } from './shared/authentication.service';
 import { StorageService } from '../core/services/storage.service';
 import { Session } from '../core/models/session.model';
 import { SecurityDataService } from '../core/services/security-data.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-login',
@@ -14,15 +14,17 @@ import { SecurityDataService } from '../core/services/security-data.service';
   providers: [AuthenticationService],
 })
 export class LoginComponent implements OnInit {
+  public loginForm: FormGroup;
   public login: LoginObject;
-  private validations: any;
   public errorEmail: string;
   public errorPassword: string;
-  public statusSuccess: number[];
   public isLoading: boolean;
+
+  private validations: any;
 
   constructor(
     private router: Router,
+    private formBuilder: FormBuilder,
     private storageService: StorageService,
     private authService: AuthenticationService,
     private securityDataService: SecurityDataService
@@ -30,37 +32,49 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     this.login = new LoginObject();
+    this.loginForm = this.formBuilder.group({
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', Validators.required],
+    });
     this.validations = {
       REQUIRED: 'Campo requerido',
+      EMAIL: 'No es un correo electrónico',
     };
     this.errorEmail = this.validations.REQUIRED;
     this.errorPassword = this.validations.REQUIRED;
-    this.statusSuccess = [200, 201];
     this.isLoading = false;
   }
 
   handleEmail() {
-    this.errorEmail = !this.login.email ? this.validations.REQUIRED : null;
+    let { email } = this.loginForm.controls;
+    if (email.hasError('required')) {
+      this.errorEmail = this.validations.REQUIRED;
+      return;
+    }
+    if (email.hasError('email')) {
+      this.errorEmail = this.validations.EMAIL;
+      return;
+    }
+    this.errorEmail = null;
   }
 
   handlePassword() {
-    this.errorPassword = !this.login.password
+    this.errorPassword = this.loginForm.controls.password.hasError('required')
       ? this.validations.REQUIRED
       : null;
   }
 
-  validateForm() {
-    return this.errorEmail || this.errorPassword;
+  formIsValid() {
+    return this.loginForm.dirty && this.loginForm.valid;
   }
 
   onLogIn() {
-    if (!this.login.email || !this.login.password) {
+    if (!this.formIsValid()) {
       return;
     }
     this.isLoading = true;
-    const newLogin = new LoginObject(this.login);
+    const newLogin = new LoginObject(this.loginForm.value);
     const ciphertext = this.securityDataService.CipherText(newLogin.password);
-    console.log(ciphertext);
     newLogin.password = ciphertext;
     this.authService.logIn(newLogin).subscribe(
       (response) => {
@@ -68,16 +82,6 @@ export class LoginComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        let { message } = error.error;
-        if (!message) {
-          message = 'La conexión a la fuente de datos ha fallado';
-        }
-        Swal.fire({
-          title: 'Error!',
-          text: message,
-          icon: 'error',
-          confirmButtonText: 'Cerrar',
-        });
       }
     );
   }

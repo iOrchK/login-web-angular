@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import Swal from 'sweetalert2';
 import { StorageService } from '../core/services/storage.service';
 import { AuthenticationService } from '../login/shared/authentication.service';
 
@@ -35,16 +34,6 @@ export class HomeComponent implements OnInit {
         },
         (error) => {
           this.isLoading = false;
-          let { message } = error.error;
-          if (!message) {
-            message = 'La conexión a la fuente de datos ha fallado';
-          }
-          Swal.fire({
-            title: 'Error!',
-            text: message,
-            icon: 'error',
-            confirmButtonText: 'Cerrar',
-          });
         }
       );
   }

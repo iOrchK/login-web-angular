@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Validators, FormGroup, FormBuilder } from '@angular/forms';
-import { Router } from '@angular/router';
 import Swal from 'sweetalert2';
 import { User } from '../core/models/User.model';
 import { AuthenticationService } from '../login/shared/authentication.service';
@@ -15,8 +14,7 @@ import { SecurityDataService } from '../core/services/security-data.service';
 })
 export class RegisterComponent implements OnInit {
   public isLoading: boolean;
-  public loginForm: FormGroup;
-  public user: User;
+  public registerForm: FormGroup;
   public errorName: string;
   public errorEmail: string;
   public errorPassword: string;
@@ -30,8 +28,7 @@ export class RegisterComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.user = new User();
-    this.loginForm = this.formBuilder.group({
+    this.registerForm = this.formBuilder.group({
       name: ['', Validators.required],
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -48,13 +45,13 @@ export class RegisterComponent implements OnInit {
   }
 
   handleName() {
-    this.errorName = this.loginForm.controls.name.hasError('required')
+    this.errorName = this.registerForm.controls.name.hasError('required')
       ? this.validations.REQUIRED
       : null;
   }
 
   handleEmail() {
-    let { email } = this.loginForm.controls;
+    let { email } = this.registerForm.controls;
     if (email.hasError('required')) {
       this.errorEmail = this.validations.REQUIRED;
       return;
@@ -67,13 +64,15 @@ export class RegisterComponent implements OnInit {
   }
 
   handlePassword() {
-    this.errorPassword = this.loginForm.controls.password.hasError('required')
+    this.errorPassword = this.registerForm.controls.password.hasError(
+      'required'
+    )
       ? this.validations.REQUIRED
       : null;
   }
 
   formIsValid() {
-    return this.loginForm.dirty && this.loginForm.valid;
+    return this.registerForm.dirty && this.registerForm.valid;
   }
 
   onRegister() {
@@ -81,7 +80,7 @@ export class RegisterComponent implements OnInit {
       return;
     }
     this.isLoading = true;
-    const newUser = new User(this.loginForm.value);
+    const newUser = new User(this.registerForm.value);
     newUser.password = this.securityDataService.CipherText(newUser.password);
     this.authService.create(newUser).subscribe(
       (response) => {
@@ -95,13 +94,6 @@ export class RegisterComponent implements OnInit {
       },
       (error) => {
         this.isLoading = false;
-        let { message } = error.error;
-        Swal.fire({
-          title: 'Error!',
-          text: message,
-          icon: 'error',
-          confirmButtonText: 'Cerrar',
-        });
       }
     );
   }
