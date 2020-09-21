@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+import { AuthorizatedGuard } from './core/guards/authorizated.guard';
 
 const routes: Routes = [
   {
@@ -8,19 +9,21 @@ const routes: Routes = [
       import('./login/login.module').then((m) => m.LoginModule),
   },
   {
-    path: 'home',
-    loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
-  },
-  {
     path: 'register',
     loadChildren: () =>
       import('./register/register.module').then((m) => m.RegisterModule),
   },
   {
+    path: 'home',
+    loadChildren: () => import('./home/home.module').then((m) => m.HomeModule),
+    canActivate: [AuthorizatedGuard],
+  },
+  {
     path: '',
-    redirectTo: 'login',
+    redirectTo: '/home',
     pathMatch: 'full',
   },
+  { path: '**', redirectTo: '/home' },
 ];
 
 @NgModule({
