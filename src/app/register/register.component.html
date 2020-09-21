@@ -1,47 +1,81 @@
 <div class="container" style="height: 100vh">
-  <div class="card mx-auto" style="width: 480px; top: 25%">
+  <div class="card mx-auto" style="max-width: 480px; top: 25%">
     <div class="card-header">Registration</div>
     <div class="card-body">
-      <form>
+      <form
+        id="login-form"
+        #lForm="ngForm"
+        [formGroup]="loginForm"
+        (ngSubmit)="onRegister()"
+        novalidate
+      >
         <div class="form-group">
-          <label for="exampleInputName1">Name</label>
+          <label for="nameTxt">Name</label>
           <input
+            id="nameTxt"
             type="text"
+            formControlName="name"
             class="form-control"
+            [ngClass]="{ 'is-invalid': errorName }"
             (keyup)="handleName()"
-            [(ngModel)]="name"
-            name="nameTxt"
           />
+          <div class="invalid-feedback">
+            {{ errorName }}
+          </div>
         </div>
         <div class="form-group">
-          <label for="exampleInputEmail1">Email</label>
+          <label for="emailTxt">Email</label>
           <input
+            id="emailTxt"
             type="email"
+            formControlName="email"
             class="form-control"
+            [ngClass]="{ 'is-invalid': errorEmail }"
             (keyup)="handleEmail()"
-            [(ngModel)]="email"
-            name="emailTxt"
           />
+          <div class="invalid-feedback">
+            {{ errorEmail }}
+          </div>
         </div>
         <div class="form-group">
-          <label for="exampleInputPassword1">Password</label>
+          <label for="passwordTxt">Password</label>
           <input
+            id="passwordTxt"
             type="password"
+            formControlName="password"
             class="form-control"
+            [ngClass]="{ 'is-invalid': errorPassword }"
             (keyup)="handlePassword()"
-            [(ngModel)]="password"
-            name="passwordTxt"
           />
+          <div class="invalid-feedback">
+            {{ errorPassword }}
+          </div>
         </div>
-        <button class="btn btn-link float-left" [routerLink]="['/login']">
-          Return to Log In
-        </button>
-        <button
-          class="btn btn-primary float-right"
-          (click)="onRegister()"
+        <div class="form-group" *ngIf="!isLoading">
+          <button
+            type="button"
+            class="btn btn-link float-left"
+            [routerLink]="['/login']"
+          >
+            Return to Log In
+          </button>
+          <button
+            type="submit"
+            form="login-form"
+            class="btn btn-primary float-right"
+            (click)="onRegister()"
+            [disabled]="!formIsValid()"
+          >
+            Create account
+          </button>
+        </div>
+        <div
+          class="spinner-border text-primary float-right"
+          role="status"
+          *ngIf="isLoading"
         >
-          Submit
-        </button>
+          <span class="sr-only">Loading...</span>
+        </div>
       </form>
     </div>
   </div>
