@@ -1,6 +1,9 @@
 {
-  "name": "temp-app",
-  "version": "0.0.0",
+  "name": "app-login",
+  "version": "1.0.0",
+  "author": "Jorge Chable",
+  "description": "Aplicación web para sesiones de usuario en Angular",
+  "license": "Copyleft",
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
