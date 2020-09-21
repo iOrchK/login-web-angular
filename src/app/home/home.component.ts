@@ -1,5 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
+import Swal from 'sweetalert2';
+import { StorageService } from '../core/services/storage.service';
+import { AuthenticationService } from '../login/shared/authentication.service';
 
 @Component({
   selector: 'app-home',
@@ -7,11 +10,42 @@ import { Router } from '@angular/router';
   styleUrls: ['./home.component.css'],
 })
 export class HomeComponent implements OnInit {
-  constructor(private router: Router) {}
+  public isLoading: boolean;
+  public userName: string;
 
-  ngOnInit(): void {}
+  constructor(
+    private router: Router,
+    private storageService: StorageService,
+    private authenticationService: AuthenticationService
+  ) {}
 
-  handleLogOut() {
-    this.router.navigate(['login']);
+  ngOnInit(): void {
+    this.isLoading = false;
+    this.userName = this.storageService.getCurrentUser().name;
+  }
+
+  onCloseSession() {
+    this.isLoading = true;
+    this.authenticationService
+      .logOut(this.storageService.getCurrentSession())
+      .subscribe(
+        (response) => {
+          localStorage.clear();
+          this.router.navigate(['login']);
+        },
+        (error) => {
+          this.isLoading = false;
+          let { message } = error.error;
+          if (!message) {
+            message = 'La conexión a la fuente de datos ha fallado';
+          }
+          Swal.fire({
+            title: 'Error!',
+            text: message,
+            icon: 'error',
+            confirmButtonText: 'Cerrar',
+          });
+        }
+      );
   }
 }

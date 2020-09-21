@@ -1,8 +1,22 @@
 <nav class="navbar navbar-dark bg-primary">
   <a class="navbar-brand">Home</a>
-  <form class="form-inline">
-    <button class="btn btn-primary my-2 my-sm-0" (click)="handleLogOut()">
-      Log Out
-    </button>
-  </form>
+
+  <div class="form-inline">
+    <div class="btn-group">
+      <button
+        class="btn text-white dropdown-toggle"
+        data-toggle="dropdown"
+        data-display="static"
+        aria-haspopup="true"
+        aria-expanded="false"
+      >
+        {{ userName }}
+      </button>
+      <div class="dropdown-menu dropdown-menu-lg-right">
+        <a class="dropdown-item btn" (click)="onCloseSession()"
+          >Close session</a
+        >
+      </div>
+    </div>
+  </div>
 </nav>
